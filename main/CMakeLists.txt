@@ -1,0 +1,17 @@
+idf_component_register(
+    SRCS 
+        "main.c"
+        "drivers/dht.c"
+        "drivers/soil.c"
+        "drivers/rtc.c"
+        "drivers/relay.c"
+        "services/sensor.c"
+        "services/irrigation.c"
+        "services/alert.c"
+        "system/state.c"
+    INCLUDE_DIRS 
+        "."
+        "drivers"
+        "services"
+        "system"
+)
