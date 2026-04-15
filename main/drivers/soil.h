@@ -1,6 +1,7 @@
 #ifndef SOIL_H
 #define SOIL_H
 
-float soil_read_moisture();
+void soil_sensor_init(void);
+int soil_sensor_read(void);
 
 #endif
