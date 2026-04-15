@@ -1,6 +1,7 @@
 #ifndef DHT_H
 #define DHT_H
+#include <stdbool.h>
 
-float dht_read_temp();
+bool dht11_read(float *temp, float *hum);
 
 #endif
