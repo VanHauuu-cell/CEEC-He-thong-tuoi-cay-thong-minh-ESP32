@@ -1,5 +1,5 @@
-#ifndef HW_CONFIG_H
-#define HW_CONFIG_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 
 #define DHT_PIN             4
