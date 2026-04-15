@@ -1,5 +1,6 @@
 #include "relay.h"
 #include "driver/gpio.h"
+#include "config.h"
 
 #define RELAY_PIN 2
 
