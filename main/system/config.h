@@ -11,9 +11,4 @@
 #define BUZZER_PIN          33
 #define SOIL_ADC_CHAN       6 
 
-
-#define SOIL_DRY_THRESHOLD  2000  
-#define HOUR_TO_WATER       8
-#define MINUTE_TO_WATER     0
-
 #endif
