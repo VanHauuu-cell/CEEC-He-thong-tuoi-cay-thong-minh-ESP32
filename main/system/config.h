@@ -1,0 +1,19 @@
+#ifndef HW_CONFIG_H
+#define HW_CONFIG_H
+
+
+#define DHT_PIN             4
+#define I2C_SDA             21
+#define I2C_SCL             22
+#define RELAY_PIN           25
+#define LED_PIN             26
+#define BUTTON_PIN          27
+#define BUZZER_PIN          33
+#define SOIL_ADC_CHAN       6 
+
+
+#define SOIL_DRY_THRESHOLD  2000  
+#define HOUR_TO_WATER       8
+#define MINUTE_TO_WATER     0
+
+#endif
