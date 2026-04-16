@@ -8,7 +8,7 @@ idf_component_register(
         "services/sensor.c"
         "services/irrigation.c"
         "services/alert.c"
-        "system/state.c"
+        "system/fsm.c"
     INCLUDE_DIRS 
         "."
         "drivers"
