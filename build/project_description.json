@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "He-thong-tuoi-cay-thong-minh-ESP32",
-    "project_version":    "1",
+    "project_version":    "68b65b3-dirty",
     "project_path":       "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32",
     "idf_path":           "D:/Esp_idf/Espressif/frameworks/esp-idf-v5.5.3",
     "build_dir":          "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build",
@@ -1240,7 +1240,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/esp-idf/main/libmain.a",
-            "sources": [ "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/main.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/dht.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/soil.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/rtc.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/relay.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/services/sensor.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/services/irrigation.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/services/alert.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/system/state.c" ],
+            "sources": [ "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/main.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/dht.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/soil.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/rtc.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/drivers/relay.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/services/sensor.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/services/irrigation.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/services/alert.c", "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main/system/fsm.c" ],
             "include_dirs": [ ".", "drivers", "services", "system" ]
         },
         "mbedtls": {
