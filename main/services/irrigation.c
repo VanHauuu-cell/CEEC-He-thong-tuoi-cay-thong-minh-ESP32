@@ -14,21 +14,21 @@ static const char *TAG = "IRRIGATION";
 
 bool pump_running = false;
 static TimerHandle_t pump_timer = NULL;
-static TimerHandle_t watting_timer = NULL;
+static TimerHandle_t waitting_timer = NULL;
 
 static void pump_timer_cb(TimerHandle_t timer){
     (void)timer;
-    ESPLOGW(TAG, "Pump timer expired");
-    system_event ev = { .event_type = E_PUMP_DONE }
+    ESP_LOGW(TAG, "Pump timer expired");
+    system_event ev = { .event_type = E_PUMP_DONE };
     BaseType_t higher_prio_woken = pdFALSE;
     xQueueSendFromISR(system_queue, &ev, &higher_prio_woken);
     portYIELD_FROM_ISR(higher_prio_woken);
 }
 
-static void watting_timer_cb(TimerHandle_t timer){
+static void waitting_timer_cb(TimerHandle_t timer){
     (void)timer;
-    ESPLOGW(TAG, "Watting done");
-    system_event ev = { .event_type = E_WAIT_DONE }
+    ESP_LOGW(TAG, "Waitting done");
+    system_event ev = { .event_type = E_WAIT_DONE };
     BaseType_t higher_prio_woken = pdFALSE;
     xQueueSendFromISR(system_queue, &ev, &higher_prio_woken);
     portYIELD_FROM_ISR(higher_prio_woken);
@@ -53,15 +53,15 @@ void irrigation_init(void){
         pump_timer_cb
         );
 
-    configASSERT(s_pump_timer != NULL);
-        waiting_timer = xTimerCreate(
+    configASSERT(pump_timer != NULL);
+        waitting_timer = xTimerCreate(
         "wait_tmr",
         pdMS_TO_TICKS(10000),
         pdFALSE,
         NULL,
-        waiting_timer_cb
+        waitting_timer_cb
         );
-    configASSERT(waiting_timer != NULL);
+    configASSERT(waitting_timer != NULL);
 
     ESP_LOGI(TAG, "Irrigation service initialized.");
 }
@@ -73,6 +73,21 @@ void irrigation_start(void){
     }
     gpio_set_level(RELAY_PIN, RELAY_ON);
     pump_running = true;
-    xTImerStart(pump_timer,pdMS_TO_TICKS(100));
-    ESP_LOGW(TAG, "PUMP ON")
+    xTimerStart(pump_timer,pdMS_TO_TICKS(100));
+    ESP_LOGW(TAG, "PUMP ON");
+}
+
+void irrigation_stop(void){
+    if(!pump_running){
+        return;
+    }
+    gpio_set_level(RELAY_PIN, RELAY_OFF);
+    pump_running = false;
+    if(xTimerIsTimerActive(pump_timer) == pdTRUE){
+        xTimerStop(pump_timer,pdMS_TO_TICKS(100));
+    }
+    ESP_LOGW(TAG, "PUMP OFF");
+}
+bool irrigation_is_running(void){
+    return pump_running;
 }

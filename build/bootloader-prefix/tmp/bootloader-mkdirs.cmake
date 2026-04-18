@@ -10,18 +10,18 @@ if(NOT EXISTS "D:/Esp_idf/Espressif/frameworks/esp-idf-v5.5.3/components/bootloa
   file(MAKE_DIRECTORY "D:/Esp_idf/Espressif/frameworks/esp-idf-v5.5.3/components/bootloader/subproject")
 endif()
 file(MAKE_DIRECTORY
-  "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader"
-  "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix"
-  "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/tmp"
-  "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp"
-  "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src"
-  "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp"
+  "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader"
+  "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix"
+  "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/tmp"
+  "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp"
+  "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src"
+  "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp"
 )
 
 set(configSubDirs )
 foreach(subDir IN LISTS configSubDirs)
-    file(MAKE_DIRECTORY "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
+    file(MAKE_DIRECTORY "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp/${subDir}")
 endforeach()
 if(cfgdir)
-  file(MAKE_DIRECTORY "E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp${cfgdir}") # cfgdir has leading slash
+  file(MAKE_DIRECTORY "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader-prefix/src/bootloader-stamp${cfgdir}") # cfgdir has leading slash
 endif()

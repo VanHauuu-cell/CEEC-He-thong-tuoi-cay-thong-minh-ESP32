@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "freertos/FreeRTOS.h"
-#include "freertos/queue.h
+#include "freertos/queue.h"
 
 typedef enum{
     E_INTI_DONE,
@@ -43,11 +43,19 @@ typedef struct {
     TickType_t pump_start_tick;
 } fsm_context;
 
+typedef enum {
+    ERR_NONE         = 0,
+    ERR_SENSOR_DHT   = 0x01, 
+    ERR_SENSOR_SOIL  = 0x02,  
+    ERR_RTC_READ     = 0x03,  
+    ERR_RELAY_FAULT  = 0x04, 
+} error_code;
+
 extern QueueHandle_t system_queue;
 
 void fsm_init(void);
 system_state get_state(void);
 void fsm_update(system_event *event);
-void fsm_task(void )
+void fsm_task (void *pvParameters);
 
 #endif

@@ -1,18 +1,8 @@
-#include <stdio.h>
-#include <stdio.h>
-#include "sensor.h"
-#include "irrigation.h"
+#include <stdint.h>
+#include <stdbool.h>
 #include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 
-void app_main(void)
-{
- while (1)
-    {
-        float temp, soil;
+void app_main(void){
 
-        sensor_read_all(&temp, &soil);
-        irrigation_update(temp, soil);
-
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
 }

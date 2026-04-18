@@ -2,7 +2,6 @@
 #include "driver/gpio.h"
 #include "config.h"
 
-#define RELAY_PIN 2
 
 void relay_init(void) {
     gpio_config_t io_out = {

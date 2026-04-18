@@ -18,8 +18,8 @@ end
 
 # Load bootloader symbols
 set confirm off
-    add-symbol-file E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader/bootloader.elf
+    add-symbol-file E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader/bootloader.elf
 set confirm on
 
 # Load application symbols
-file E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/He-thong-tuoi-cay-thong-minh-ESP32.elf
+file E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/He-thong-tuoi-cay-thong-minh-ESP32.elf

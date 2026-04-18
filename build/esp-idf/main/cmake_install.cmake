@@ -1,4 +1,4 @@
-# Install script for directory: E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/main
+# Install script for directory: E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

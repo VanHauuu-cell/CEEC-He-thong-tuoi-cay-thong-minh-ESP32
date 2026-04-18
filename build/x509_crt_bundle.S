@@ -1,4 +1,4 @@
-/* * Data converted from E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 #if !defined (__APPLE__) && !defined (__linux__)

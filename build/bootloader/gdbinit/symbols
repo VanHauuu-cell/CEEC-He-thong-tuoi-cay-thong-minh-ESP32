@@ -22,4 +22,4 @@ set confirm off
 set confirm on
 
 # Load application symbols
-file E:/CEEC/He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader/bootloader.elf
+file E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build/bootloader/bootloader.elf

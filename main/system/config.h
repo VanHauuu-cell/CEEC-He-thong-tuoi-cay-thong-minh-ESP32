@@ -11,4 +11,5 @@
 #define BUZZER_PIN          33
 #define SOIL_ADC_CHAN       6 
 
+#define SENSOR_READ_INTERVAL 2000
 #endif
