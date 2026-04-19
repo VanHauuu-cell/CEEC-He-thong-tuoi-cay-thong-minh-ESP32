@@ -1,60 +1,152 @@
-#include "config.h"
 #include "fsm.h"
+#include "config.h"
 #include "irrigation.h"
 #include "alert.h"
 
-static system_state current_state;
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "freertos/task.h"
+#include "freertos/timers.h"
+#include "esp_log.h"
 
-//init
-void fsm_inti(void){
-    current_state = S_IDLE;
+static const char *TAG = "FSM";
+QueueHandle_t system_queue = NULL;
+
+system_state current_state = S_IDLE;
+float last_temp = 0.0;
+float last_hum = 0.0;
+float last_soil = 0.0;
+bool schedule = false;
+
+static TimerHandle_t wait_timer = NULL;
+static void wait_timer_cb(TimerHandle_t timer){
+    (void)timer;
+    system_event ev = {
+        .event_type = E_WAIT_DONE
+    };
+    BaseType_t hp = pdFALSE;
+    xQueueSendFromISR(system_queue, &ev, &hp);
+    portYIELD_FROM_ISR(hp);
 }
 
-system_state get_state(void){
-    return current_state;
+static void enter_idle (void){
+    current_state  = S_IDLE;
+    alert_status_led (1);
+    ESP_LOGI(TAG, ": IDLE");
 }
 
-void state_update(system_event *event){
-    switch(current_state){
+static void enter_wattering(void){
+    current_state = S_WATERRING;
+    xTimerStart(wait_timer, pdMS_TO_TICKS(100));
+    ESP_LOGI(TAG, ": WATTER (soil=%2.f)", last_soil);
+}
+
+static void enter_alert(void){
+    current_state = S_ALERT;
+    irrigation_stop();
+    alert_on();
+    ESP_LOGI(TAG, ": ALERT (temp=%2.f)  (hum=%2.f)", last_temp, last_hum);
+}
+
+static void enter_error(uint8_t code){
+    current_state = S_ERROR;
+    irrigation_stop();
+    alert_on();
+    ESP_LOGI(TAG, ": ERROR (code=0x%02X)", code);
+}
+
+static void enter_waiting(void)
+{
+    current_state = S_WAITING;
+    xTimerStart(wait_timer, pdMS_TO_TICKS(100));
+    ESP_LOGI(TAG, ": WAITING (%d ms)", WAITING_DURATION_MS);
+}
+
+void fsm_handle_event (system_event *ev){
+    if(ev-> event_type == E_ERROR){
+        enter_error(ev->error_code);
+        return;
+    }
+    switch (current_state){
         case S_IDLE:
-            if(event->event_type == E_SENSOR_UPDATE){
-                if(event->soil < 2000){
-                    irrigation_start();
-                    current_state = S_WATERRING;
-                }
-                else if (event->temp > 35){
-                    alert_on();
-                    current_state = S_ALERT;
-                }
-            }
-            else if( event->event_type == E_RTC_TRIGGER){
-                irrigation_start();
-                current_state = S_SCHEDULE;
+            if(ev-> event_type != E_SENSOR_UPDATE) break;
+            if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH) enter_alert();
+            else if(last_soil < SOIL_DRY_THRESHOLD){
+                enter_wattering(); 
             }
             break;
+
         case S_WATERRING:
-            if(event->event_type == E_SENSOR_UPDATE){
-                if(event->soil >= 2000){
+            if(ev-> event_type == E_SENSOR_UPDATE){
+                last_temp = ev->temp;
+                last_hum = ev->hum;
+                last_soil = ev->soil;
+
+                if(last_soil > SOIL_WET_THRESHOLD){
                     irrigation_stop();
-                    current_state = S_IDLE;
+                    enter_waiting();
                 }
             }
-            break;
-        case S_SCHEDULE:
-            if(event->event_type == E_SENSOR_UPDATE){
-                if(event->soil >= 2000){
-                    irrigation_stop();
-                    current_state = S_IDLE;
-                }
+            else if(ev-> event_type == E_PUMP_DONE){
+                irrigation_stop();
+                enter_waiting();
             }
             break;
+
+        case S_WAITING:
+            if(ev->event_type == E_WAIT_DONE){
+                enter_idle();
+            }
+            break;
+        
         case S_ALERT:
-            if(event->event_type == E_SENSOR_UPDATE){
-                if(event->temp <= 30){
+            if(ev ->event_type == E_SENSOR_UPDATE){
+                last_hum = ev-> hum;
+                last_soil = ev-> soil;
+                last_temp = ev-> temp;
+
+                if(last_temp <= TEMP_ALERT_RECOVER && last_hum >= HUM_ALERT_LOW ){
                     alert_off();
-                    current_state = S_IDLE;
+                    enter_idle();
                 }
             }
+            break;
+        
+        case S_ERROR:
+            break;
+
+        default:
+            enter_idle();
             break;
     }
+        
+} 
+
+void fsm_init(void){
+    current_state = S_IDLE;
+    system_queue = xQueueCreate(EVENT_QUEUE_SIZE, sizeof(system_event));
+    configASSERT(system_queue != NULL);
+
+    wait_timer = xTimerCreate (
+        "wait timer",
+        pdMS_TO_TICKS(WAITING_DURATION_MS),
+        pdFALSE,
+        NULL,
+        wait_timer_cb
+    );
+    configASSERT(wait_timer != NULL);
+    ESP_LOGI(TAG, "FSM init");
 }
+
+void fsm_task(void *pvParameters){
+    (void)pvParameters;
+    system_event ev;
+    ESP_LOGI(TAG, "FSM task start");
+    while(1){
+        if(xQueueReceive(system_queue, &ev,  portMAX_DELAY) == pdTRUE){
+            fsm_handle_event(&ev);
+        }
+    }
+}
+
+

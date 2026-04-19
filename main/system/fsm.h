@@ -6,6 +6,14 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
+#define TEMP_ALERT_HIGH       38.0f   
+#define TEMP_ALERT_RECOVER    35.0f 
+#define HUM_ALERT_LOW         20.0f   
+#define SOIL_DRY_THRESHOLD    2000    
+#define SOIL_WET_THRESHOLD    2800   
+#define WAITING_DURATION_MS   10000   
+#define EVENT_QUEUE_SIZE      10
+
 typedef enum{
     E_INTI_DONE,
     E_WEATHER_UPDATE,
@@ -20,7 +28,8 @@ typedef enum{
     S_IDLE,
     S_WATERRING,
     S_ALERT,
-    S_SCHEDULE
+    S_ERROR,
+    S_WAITING
 } system_state;
 
 typedef struct{
@@ -31,17 +40,6 @@ typedef struct{
     bool weather;
     uint8_t error_code;
 } system_event;
-
-typedef struct {
-    system_state current_state;
-    system_state prev_state;     
-    float last_temp;
-    float last_humidity;
-    float last_soil;
-    bool  rain_today;         
-    bool  schedule_triggered;
-    TickType_t pump_start_tick;
-} fsm_context;
 
 typedef enum {
     ERR_NONE         = 0,
@@ -54,8 +52,7 @@ typedef enum {
 extern QueueHandle_t system_queue;
 
 void fsm_init(void);
-system_state get_state(void);
-void fsm_update(system_event *event);
+void fsm_handle_event(system_event * ev);
 void fsm_task (void *pvParameters);
 
 #endif
