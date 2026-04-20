@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
+#include "freertos/task.h" 
 
 #define TEMP_ALERT_HIGH       38.0f   
 #define TEMP_ALERT_RECOVER    35.0f 

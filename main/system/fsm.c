@@ -2,6 +2,7 @@
 #include "config.h"
 #include "irrigation.h"
 #include "alert.h"
+#include "rtc.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -24,9 +25,23 @@ static void wait_timer_cb(TimerHandle_t timer){
     system_event ev = {
         .event_type = E_WAIT_DONE
     };
-    BaseType_t hp = pdFALSE;
-    xQueueSendFromISR(system_queue, &ev, &hp);
-    portYIELD_FROM_ISR(hp);
+    xQueueSend(system_queue, &ev, 0);
+}
+
+static void rtc_task(void *pv){
+    int h, m;
+    int last_trigger_min = -1;
+    while(1){
+        rtc_get_time(&h, &m);
+        if( h == 6 && m == 0 && m != last_trigger_min ){
+        system_event ev = {
+            .event_type = E_RTC_TRIGGER
+             };
+        xQueueSend(system_queue, &ev, portMAX_DELAY);     
+        last_trigger_min = m;
+         }
+    vTaskDelay(pdMS_TO_TICKS(WAITING_DURATION_MS));
+    }
 }
 
 static void enter_idle (void){
@@ -37,7 +52,7 @@ static void enter_idle (void){
 
 static void enter_wattering(void){
     current_state = S_WATERRING;
-    xTimerStart(wait_timer, pdMS_TO_TICKS(100));
+    irrigation_start();
     ESP_LOGI(TAG, ": WATTER (soil=%2.f)", last_soil);
 }
 
@@ -67,12 +82,24 @@ void fsm_handle_event (system_event *ev){
         enter_error(ev->error_code);
         return;
     }
+    
+    if(ev-> event_type == E_SENSOR_UPDATE){
+        last_temp = ev->temp;
+        last_hum = ev->hum;
+        last_soil = ev->soil;
+    }
+
     switch (current_state){
         case S_IDLE:
-            if(ev-> event_type != E_SENSOR_UPDATE) break;
-            if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH) enter_alert();
-            else if(last_soil < SOIL_DRY_THRESHOLD){
+            if(ev -> event_type == E_RTC_TRIGGER){
+                enter_wattering();
+                break;   
+            }
+            if(ev-> event_type == E_SENSOR_UPDATE){
+                if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH) enter_alert();
+                else if(last_soil < SOIL_DRY_THRESHOLD){
                 enter_wattering(); 
+                }
             }
             break;
 
@@ -101,10 +128,6 @@ void fsm_handle_event (system_event *ev){
         
         case S_ALERT:
             if(ev ->event_type == E_SENSOR_UPDATE){
-                last_hum = ev-> hum;
-                last_soil = ev-> soil;
-                last_temp = ev-> temp;
-
                 if(last_temp <= TEMP_ALERT_RECOVER && last_hum >= HUM_ALERT_LOW ){
                     alert_off();
                     enter_idle();

@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-void irrigation_update(float temp, float soil);
+void irrigation_init(void);
 void irrigation_start(void);
 void irrigation_stop(void);
 bool irrigation_is_running(void);

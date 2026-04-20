@@ -51,17 +51,10 @@ void sensor_task(void *pvParameters){
         .temp = data.temp,
         .hum = data.hum,
         .soil = data.soil,
-    };
+        };
 
-    xQueueSend(system_queue, &ev, pdMS_TO_TICKS(100));
-}
-    system_event ev ={
-        .event_type = E_SENSOR_UPDATE,
-        .temp = data.temp,
-        .hum = data.hum,
-        .soil = data.soil,
-    };
     xQueueSend(system_queue, &ev, pdMS_TO_TICKS(100));
     ESP_LOGD(TAG, "Sent: temp=%.1f°C  hum=%.1f%%  soil=%.1f%%",
          data.temp, data.hum, data.soil);
+    }
 }
