@@ -17,7 +17,7 @@ static TimerHandle_t pump_timer = NULL;
 
 static void pump_timer_cb(TimerHandle_t timer){
     (void)timer;
-    ESP_LOGW(TAG, "Pump timer expired");
+    ESP_LOGI(TAG, "Pump timer expired");
     system_event ev = { .event_type = E_PUMP_DONE };
     xQueueSend(system_queue, &ev, 0);
 }
@@ -38,8 +38,8 @@ void irrigation_init(void){
         pdMS_TO_TICKS(20000),
         pdFALSE,          
         NULL,
-        pump_timer_cb
-        );
+        pump_timer_cb);
+     configASSERT(pump_timer != NULL);
     ESP_LOGI(TAG, "Irrigation service initialized.");
 }
 

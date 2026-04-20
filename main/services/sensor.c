@@ -18,7 +18,7 @@ int sensor_read(sensor_data *val){
     float raw_temp = 0;
     float raw_hum = 0;
     bool dht_oke = dht11_read(&raw_temp, &raw_hum);
-    if(dht_oke != 1){
+    if(!dht_oke){
         ESP_LOGW(TAG, "dht has failed");
         return 0;
     }
@@ -54,7 +54,7 @@ void sensor_task(void *pvParameters){
         };
 
     xQueueSend(system_queue, &ev, pdMS_TO_TICKS(100));
-    ESP_LOGD(TAG, "Sent: temp=%.1f°C  hum=%.1f%%  soil=%.1f%%",
+    ESP_LOGI(TAG, "Sent: temp=%.1f*C  hum=%.1f,  soil=%.1f",
          data.temp, data.hum, data.soil);
     }
 }

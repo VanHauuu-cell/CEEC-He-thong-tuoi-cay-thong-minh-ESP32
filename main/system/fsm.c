@@ -14,9 +14,9 @@ static const char *TAG = "FSM";
 QueueHandle_t system_queue = NULL;
 
 system_state current_state = S_IDLE;
-float last_temp = 0.0;
-float last_hum = 0.0;
-float last_soil = 0.0;
+float last_temp = 0;
+float last_hum = 0;
+float last_soil = 0;
 bool schedule = false;
 
 static TimerHandle_t wait_timer = NULL;
@@ -28,21 +28,6 @@ static void wait_timer_cb(TimerHandle_t timer){
     xQueueSend(system_queue, &ev, 0);
 }
 
-static void rtc_task(void *pv){
-    int h, m;
-    int last_trigger_min = -1;
-    while(1){
-        rtc_get_time(&h, &m);
-        if( h == 6 && m == 0 && m != last_trigger_min ){
-        system_event ev = {
-            .event_type = E_RTC_TRIGGER
-             };
-        xQueueSend(system_queue, &ev, portMAX_DELAY);     
-        last_trigger_min = m;
-         }
-    vTaskDelay(pdMS_TO_TICKS(WAITING_DURATION_MS));
-    }
-}
 
 static void enter_idle (void){
     current_state  = S_IDLE;
@@ -109,7 +94,7 @@ void fsm_handle_event (system_event *ev){
                 last_hum = ev->hum;
                 last_soil = ev->soil;
 
-                if(last_soil > SOIL_WET_THRESHOLD){
+                if(last_soil < SOIL_WET_THRESHOLD){
                     irrigation_stop();
                     enter_waiting();
                 }
@@ -171,5 +156,4 @@ void fsm_task(void *pvParameters){
         }
     }
 }
-
 

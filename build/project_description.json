@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "He-thong-tuoi-cay-thong-minh-ESP32",
-    "project_version":    "37d5a4c-dirty",
+    "project_version":    "1c00bbe-dirty",
     "project_path":       "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32",
     "idf_path":           "D:/Esp_idf/Espressif/frameworks/esp-idf-v5.5.3",
     "build_dir":          "E:/CEEC/CEEC-He-thong-tuoi-cay-thong-minh-ESP32/build",

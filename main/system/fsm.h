@@ -7,11 +7,11 @@
 #include "freertos/queue.h"
 #include "freertos/task.h" 
 
-#define TEMP_ALERT_HIGH       38.0f   
-#define TEMP_ALERT_RECOVER    35.0f 
+#define TEMP_ALERT_HIGH       31.0f   
+#define TEMP_ALERT_RECOVER    28.0f 
 #define HUM_ALERT_LOW         20.0f   
-#define SOIL_DRY_THRESHOLD    2000    
-#define SOIL_WET_THRESHOLD    2800   
+#define SOIL_DRY_THRESHOLD    2300    
+#define SOIL_WET_THRESHOLD    1500   
 #define WAITING_DURATION_MS   10000   
 #define EVENT_QUEUE_SIZE      10
 

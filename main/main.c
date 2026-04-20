@@ -18,10 +18,11 @@ static void rtc_task(void *pv){
     int h = 0, m = 0;
     bool triggered = false;
     while(1) {
-        ESP_LOGD(TAG, "RTC task create, time =%02d : %02d", h, m);
-        if(h == 6 && m == 0){
+        ESP_LOGI(TAG, "RTC task create, time =%02d : %02d", h, m);
+        rtc_get_time(&h, &m);
+        if(h == 6 && m == 0 && !triggered){
              if(!triggered){
-                 triggered = true;
+                triggered = true;
                 system_event ev = { .event_type = E_RTC_TRIGGER};
                 xQueueSend(system_queue, &ev, pdMS_TO_TICKS(100));
                 ESP_LOGI(TAG, "RTC trigger sent, time: %02d:%02d", h, m);
@@ -30,8 +31,8 @@ static void rtc_task(void *pv){
         else {
         triggered = false;
         }
+     vTaskDelay(pdMS_TO_TICKS(1000));
     }   
-    vTaskDelay(pdMS_TO_TICKS(30000));
 }
 void app_main(void){
     fsm_init();
