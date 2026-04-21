@@ -15,7 +15,7 @@ void weather_task(void *pv) {
         esp_netif_t* netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
         
         if (esp_netif_get_ip_info(netif, &ip_info) == ESP_OK && ip_info.ip.addr != 0) {
-            // CÓ IP RỒI MỚI CHẠY TIẾP
+            // doi ip wifi ket noi duoc
             ESP_LOGI("WEATHER", "Internet Ready! Fetching data...");
         
         esp_http_client_config_t config = { 
