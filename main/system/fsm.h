@@ -17,12 +17,12 @@
 
 typedef enum{
     E_INTI_DONE,
-    E_WEATHER_UPDATE,
     E_WAIT_DONE,
     E_RTC_TRIGGER,
     E_SENSOR_UPDATE,
     E_PUMP_DONE,
     E_BUTTON_PRESS,
+    E_WEATHER_UPDATE,
     E_ERROR
 } event_type;
 
@@ -39,7 +39,7 @@ typedef struct{
     float temp;
     float soil;
     float hum;
-    bool weather;
+    bool weather; // true nếu trời mưa, false nếu không mưa
     uint8_t error_code;
 } system_event;
 

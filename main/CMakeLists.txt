@@ -11,10 +11,21 @@ idf_component_register(
         "services/sensor.c"
         "services/irrigation.c"
         "services/alert.c"
+        "services/wifi_manager.c"
+        "services/weather_api.c"
         "system/fsm.c"
     INCLUDE_DIRS 
         "."
         "drivers"
         "services"
         "system"
+    REQUIRES 
+        json
+        esp_adc
+        driver
+        esp_wifi
+        esp_http_client
+        nvs_flash
+        esp_timer
+        esp_netif
 )

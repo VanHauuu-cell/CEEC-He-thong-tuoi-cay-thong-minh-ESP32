@@ -3,6 +3,8 @@
 #include "irrigation.h"
 #include "alert.h"
 #include "rtc.h"
+#include "wifi_manager.h"
+#include "weather_api.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -61,9 +63,16 @@ static void enter_waiting(void)
     ESP_LOGI(TAG, ": WAITING (%d ms)", WAITING_DURATION_MS);
 }
 
+bool is_raining = false;
+
 void fsm_handle_event (system_event *ev){
     if(ev-> event_type == E_ERROR){
         enter_error(ev->error_code);
+        return;
+    }
+
+    if(ev->event_type == E_WEATHER_UPDATE){
+        is_raining = ev->weather;
         return;
     }
 
@@ -84,8 +93,13 @@ void fsm_handle_event (system_event *ev){
     switch (current_state){
         case S_IDLE:
             if(ev -> event_type == E_RTC_TRIGGER){
+                if(is_raining){
+                    ESP_LOGI(TAG, "Skipping watering due to rain");
+                    break;
+                }else{
                 enter_wattering();
-                break;   
+                break;
+                }   
             }
             if(ev-> event_type == E_SENSOR_UPDATE){
                 if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH) enter_alert();
@@ -120,7 +134,7 @@ void fsm_handle_event (system_event *ev){
         
         case S_ALERT:
             if(ev ->event_type == E_SENSOR_UPDATE){
-                if(last_temp <= TEMP_ALERT_RECOVER && last_hum >= HUM_ALERT_LOW ){
+                if(last_temp <= TEMP_ALERT_RECOVER || last_hum >= HUM_ALERT_LOW ){
                     alert_off();
                     enter_idle();
                 }
@@ -128,6 +142,11 @@ void fsm_handle_event (system_event *ev){
             break;
         
         case S_ERROR:
+        if(ev->event_type == E_SENSOR_UPDATE){
+                ESP_LOGI(TAG, "Sensor recovered, clearing error state");
+                alert_off();  
+                enter_idle(); 
+            }
             break;
 
         default:
