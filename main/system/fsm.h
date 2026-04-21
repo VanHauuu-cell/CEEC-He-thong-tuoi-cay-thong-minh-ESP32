@@ -12,7 +12,7 @@
 #define HUM_ALERT_LOW         20.0f   
 #define SOIL_DRY_THRESHOLD    2300    
 #define SOIL_WET_THRESHOLD    1500   
-#define WAITING_DURATION_MS   10000   
+#define WAITING_DURATION_MS   30000   
 #define EVENT_QUEUE_SIZE      10
 
 typedef enum{
@@ -22,6 +22,7 @@ typedef enum{
     E_RTC_TRIGGER,
     E_SENSOR_UPDATE,
     E_PUMP_DONE,
+    E_BUTTON_PRESS,
     E_ERROR
 } event_type;
 

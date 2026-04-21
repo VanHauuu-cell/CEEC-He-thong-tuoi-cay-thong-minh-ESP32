@@ -16,3 +16,4 @@ void button_init(void) {
 bool button_is_pressed(void) { 
     return gpio_get_level(BUTTON_PIN) == 0; // Nút nhấn kéo xuống GND
 }
+

@@ -31,7 +31,6 @@ static void wait_timer_cb(TimerHandle_t timer){
 
 static void enter_idle (void){
     current_state  = S_IDLE;
-    alert_status_led (1);
     ESP_LOGI(TAG, ": IDLE");
 }
 
@@ -67,7 +66,15 @@ void fsm_handle_event (system_event *ev){
         enter_error(ev->error_code);
         return;
     }
-    
+
+    if(ev-> event_type == E_BUTTON_PRESS){
+        if(current_state != S_WATERRING){
+            if(current_state == S_ALERT) alert_off();
+            enter_wattering();
+        }
+        return;
+    }
+
     if(ev-> event_type == E_SENSOR_UPDATE){
         last_temp = ev->temp;
         last_hum = ev->hum;
@@ -82,7 +89,7 @@ void fsm_handle_event (system_event *ev){
             }
             if(ev-> event_type == E_SENSOR_UPDATE){
                 if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH) enter_alert();
-                else if(last_soil < SOIL_DRY_THRESHOLD){
+                else if(last_soil > SOIL_DRY_THRESHOLD){
                 enter_wattering(); 
                 }
             }
