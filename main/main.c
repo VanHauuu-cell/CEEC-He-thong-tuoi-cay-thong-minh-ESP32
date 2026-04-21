@@ -29,7 +29,7 @@ static void rtc_task(void *pv){
         rtc_get_time(&h, &m);
        if (m != last_m) {
             ESP_LOGI(TAG, "Current Time: %02d:%02d", h, m);
-            ESP_LOGI("WEATHER", "Current Weather: %s", is_raining ? "Rainy" : "Clear");
+            ESP_LOGI("WEATHER", "Current Weather: %s", is_raining ? "Rainy" : "Clear");//log thoi tiet theo rtc
             last_m = m; 
         }
         if(h == 6 && m == 0){
@@ -53,7 +53,7 @@ static void button_task(void *pv){
     while(1){
         bool current_state = button_is_pressed(); 
         
-        // Phát hiện cạnh xuống (Lúc bắt đầu nhấn)
+        //phat hien canh xuong nut nhan ->> an nut
         if(current_state && !last_state){ 
             ESP_LOGW(TAG, "Button Pressed Detected");
             system_event ev = { .event_type = E_BUTTON_PRESS };
@@ -74,11 +74,13 @@ void app_main(void){
     relay_init();
     ds3231_init();
     sensor_init();
+
     
 
     irrigation_init();
     alert_init();
     fsm_init();
+    rtc_set_time(5, 59, 40); // Đặt thời gian ban đầu cho RTC (6:00:00)
 
     wifi_connect();
     vTaskDelay(pdMS_TO_TICKS(2000));

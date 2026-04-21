@@ -46,7 +46,7 @@ static void enter_alert(void){
     current_state = S_ALERT;
     irrigation_stop();
     alert_on();
-    ESP_LOGI(TAG, ": ALERT (temp=%2.f)  (hum=%2.f)", last_temp, last_hum);
+    ESP_LOGW(TAG, ": ALERT (temp=%2.f)  (hum=%2.f)", last_temp, last_hum);
 }
 
 static void enter_error(uint8_t code){
@@ -63,7 +63,7 @@ static void enter_waiting(void)
     ESP_LOGI(TAG, ": WAITING (%d ms)", WAITING_DURATION_MS);
 }
 
-bool is_raining = false;
+extern bool is_raining = false;
 
 void fsm_handle_event (system_event *ev){
     if(ev-> event_type == E_ERROR){
@@ -78,8 +78,11 @@ void fsm_handle_event (system_event *ev){
 
     if(ev-> event_type == E_BUTTON_PRESS){
         if(current_state != S_WATERRING){
-            if(current_state == S_ALERT) alert_off();
             enter_wattering();
+        }
+        else{
+            irrigation_stop();
+            enter_waiting();
         }
         return;
     }
@@ -90,19 +93,22 @@ void fsm_handle_event (system_event *ev){
         last_soil = ev->soil;
     }
 
+    // if(ev->event_type == E_RTC_TRIGGER) {
+    //     if(is_raining) {
+    //         ESP_LOGW(TAG, "RTC Trigger received: SKIPPING watering due to rain.");
+    //         return; 
+    //     }
+    // }
     switch (current_state){
         case S_IDLE:
-            if(ev -> event_type == E_RTC_TRIGGER){
-                if(is_raining){
-                    ESP_LOGI(TAG, "Skipping watering due to rain");
-                    break;
-                }else{
+            if(ev -> event_type == E_RTC_TRIGGER && last_soil > SOIL_WET_THRESHOLD){
                 enter_wattering();
-                break;
-                }   
+                break; 
             }
             if(ev-> event_type == E_SENSOR_UPDATE){
-                if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH) enter_alert();
+                if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH){
+                 enter_alert();
+                }
                 else if(last_soil > SOIL_DRY_THRESHOLD){
                 enter_wattering(); 
                 }
@@ -144,8 +150,13 @@ void fsm_handle_event (system_event *ev){
         case S_ERROR:
         if(ev->event_type == E_SENSOR_UPDATE){
                 ESP_LOGI(TAG, "Sensor recovered, clearing error state");
-                alert_off();  
-                enter_idle(); 
+                if(last_hum < HUM_ALERT_LOW && last_temp > TEMP_ALERT_HIGH) {
+                    enter_alert(); 
+                } 
+                else {
+                    alert_off();  
+                    enter_idle(); 
+                }
             }
             break;
 

@@ -10,8 +10,8 @@
 #define TEMP_ALERT_HIGH       31.0f   
 #define TEMP_ALERT_RECOVER    28.0f 
 #define HUM_ALERT_LOW         20.0f   
-#define SOIL_DRY_THRESHOLD    2300    
-#define SOIL_WET_THRESHOLD    1500   
+#define SOIL_DRY_THRESHOLD    3500    
+#define SOIL_WET_THRESHOLD    2000   
 #define WAITING_DURATION_MS   30000   
 #define EVENT_QUEUE_SIZE      10
 
