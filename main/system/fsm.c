@@ -33,7 +33,6 @@ static void wait_timer_cb(TimerHandle_t timer){
 
 static void enter_idle (void){
     current_state  = S_IDLE;
-    ESP_LOGI(TAG, ": IDLE");
 }
 
 static void enter_wattering(void){
@@ -53,7 +52,6 @@ static void enter_error(uint8_t code){
     current_state = S_ERROR;
     irrigation_stop();
     alert_on();
-    ESP_LOGI(TAG, ": ERROR (code=0x%02X)", code);
 }
 
 static void enter_waiting(void)

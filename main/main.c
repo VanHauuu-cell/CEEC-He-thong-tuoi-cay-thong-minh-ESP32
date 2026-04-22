@@ -35,7 +35,7 @@ static void rtc_task(void *pv){
             ESP_LOGI(TAG, "Current Time: %02d:%02d", h, m);
             ESP_LOGI("WEATHER", "Current Weather: %s", is_raining ? "Rainy" : "Clear");//log thoi tiet theo rtc
             last_m = m; 
-        }
+            }
         if(h == 6 && m == 0){
              if(!triggered){
                 triggered = true;
@@ -90,7 +90,7 @@ void app_main(void){
 
     wifi_connect();
     vTaskDelay(pdMS_TO_TICKS(2000));
-
+ 
     xTaskCreate(button_task, "button_task", 2048, NULL, 5, NULL);
     xTaskCreate(fsm_task, "fsm_task", 4096, NULL, 6, NULL);
     xTaskCreate(weather_task, "weather_task", 8192, NULL, 4, NULL);
