@@ -93,12 +93,12 @@ void fsm_handle_event (system_event *ev){
         last_soil = ev->soil;
     }
 
-    // if(ev->event_type == E_RTC_TRIGGER) {
-    //     if(is_raining) {
-    //         ESP_LOGW(TAG, "RTC Trigger received: SKIPPING watering due to rain.");
-    //         return; 
-    //     }
-    // }
+    if(ev->event_type == E_RTC_TRIGGER) {
+         if(is_raining) {
+             ESP_LOGW(TAG, "RTC Trigger received: SKIPPING watering due to rain.");
+             return; 
+         }
+    }
     switch (current_state){
         case S_IDLE:
             if(ev -> event_type == E_RTC_TRIGGER && last_soil > SOIL_WET_THRESHOLD){
