@@ -11,6 +11,7 @@
 #include "wifi_manager.h"
 #include "weather_api.h"
 
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
@@ -19,6 +20,9 @@
 
 static const char *TAG  = "MAIN";
 extern bool is_raining;
+extern float last_temp;
+extern float last_hum;
+extern float last_soil;
 
 static void rtc_task(void *pv){
     (void)pv;
@@ -67,6 +71,9 @@ static void button_task(void *pv){
     }
 }
 
+
+
+
 void app_main(void){
     led_init();
     buzzer_init();
@@ -80,7 +87,6 @@ void app_main(void){
     irrigation_init();
     alert_init();
     fsm_init();
-    rtc_set_time(5, 59, 40); // Đặt thời gian ban đầu cho RTC (6:00:00)
 
     wifi_connect();
     vTaskDelay(pdMS_TO_TICKS(2000));
