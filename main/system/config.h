@@ -9,7 +9,7 @@
 #define LED_PIN             26
 #define BUTTON_PIN          27
 #define BUZZER_PIN          33
-#define SOIL_ADC_CHAN       6 
+#define SOIL_ADC_CHAN       6 // chân ADC1_CHANNEL_6 = GPIO34
 
-#define SENSOR_READ_INTERVAL 4000
+#define SENSOR_READ_INTERVAL 2000
 #endif

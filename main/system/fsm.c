@@ -49,8 +49,10 @@ static void enter_alert(void){
 }
 
 static void enter_error(uint8_t code){
-    current_state = S_ERROR;
-    irrigation_stop();
+    if(current_state != S_WATERRING){
+        current_state = S_ERROR;
+        irrigation_stop();
+    }
     alert_on();
 }
 
