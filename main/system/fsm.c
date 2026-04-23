@@ -91,6 +91,9 @@ void fsm_handle_event (system_event *ev){
         last_temp = ev->temp;
         last_hum = ev->hum;
         last_soil = ev->soil;
+        if(ev->temp < TEMP_ALERT_HIGH || ev->hum > HUM_ALERT_LOW){
+            alert_off();
+        }
     }
 
     if(ev->event_type == E_RTC_TRIGGER) {
@@ -120,6 +123,7 @@ void fsm_handle_event (system_event *ev){
                 last_temp = ev->temp;
                 last_hum = ev->hum;
                 last_soil = ev->soil;
+                alert_off();
 
                 if(last_soil < SOIL_WET_THRESHOLD){
                     irrigation_stop();

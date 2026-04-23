@@ -81,8 +81,7 @@ void app_main(void){
     relay_init();
     ds3231_init();
     sensor_init();
-
-    
+        
 
     irrigation_init();
     alert_init();
